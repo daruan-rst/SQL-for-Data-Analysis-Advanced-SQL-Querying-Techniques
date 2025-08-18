@@ -106,9 +106,23 @@ FROM happiness_scores hs
 	ON hs.country = cs.country
 	WHERE cs.country IS NULL;
 
--- -- the following query 
         
 -- 3. Joining on multiple columns
+
+SELECT * FROM happiness_scores hs;
+
+SELECT * FROM country_stats cs;
+
+SELECT * FROM inflation_rates ir;
+
+SELECT * 
+FROM happiness_scores hs 
+INNER JOIN inflation_rates ir 
+ON hs.country = ir.country_name -- If we were to end the query right here, we would have a lot of repeated rows, since our join condition only takes into account our "country" column
+AND hs.`year` = ir.`year` 
+
+
+-- 4. Joinning multiple tables
 
 -- 5. Self joins
 
