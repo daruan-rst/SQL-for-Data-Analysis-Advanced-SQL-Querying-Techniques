@@ -124,7 +124,7 @@ AND hs.`year` = ir.`year`
 
 -- 4. Joinning multiple tables
 
-SELECT * FROM happiness_scores hs;
+SELECT * FROM happiness_scores dhs;
 
 SELECT * FROM country_stats cs;
 
@@ -141,7 +141,55 @@ AND hs.country  = ir.country_name;
 
 -- 5. Self joins
 
-        
+CREATE TABLE IF NOT EXISTS employees (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    salary INT,
+    manager_id INT
+);
+
+INSERT INTO employees (employee_id, employee_name, salary, manager_id) VALUES
+	(1, 'Ava', 85000, NULL),
+	(2, 'Bob', 72000, 1),
+	(3, 'Cat', 59000, 1),
+	(4, 'Dan', 85000, 2);
+
+SELECT * FROM employees
+
+-- Example 1: Finding the employees with the same salary
+
+SELECT e1.employee_name, e1.salary,
+		e2.employee_name, e2.salary
+FROM employees e1
+INNER JOIN employees e2
+ON e1.salary = e2.salary -- If the query ended here we would see results that matched employees with themselves (since this is a self join and asserting for equal on only one value would have repeated rows)
+WHERE e1.employee_name <> e2.employee_name; -- this criteria will filter for names that are not equal to each other -> but the problem is that a biderectional relationship should be displayed twice
+
+SELECT e1.employee_name, e1.salary,
+		e2.employee_name, e2.salary
+FROM employees e1
+INNER JOIN employees e2
+ON e1.salary = e2.salary 
+WHERE e1.employee_id > e2.employee_id ; -- this trick of comparing the ids solves the problem of duplicate lines
+
+-- Example 2: Employees that have a greater salary
+    
+SELECT e1.employee_id, e1.employee_name, e1.salary,
+		e2.employee_name, e2.salary
+FROM employees e1
+INNER JOIN employees e2
+ON e1.salary > e2.salary
+ORDER BY e1.employee_id
+
+-- Example 3: Employees and their managers
+
+SELECT e1.employee_id, e1.employee_name, e1.manager_id,
+		e2.employee_name AS manager_name
+FROM employees e1 -- In this example we want the manager_id to column to match the employee_id
+LEFT JOIN employees e2 -- Insead of using an INNER JOIN, we will use a LEFT JOIN instead. With an inner join we would be joining two tables and expect all the rows to match. With a LEFT JOIN we can use the left table as a grounding table, diplaying all the data on the output 
+ON e1.manager_id = e2.employee_id;
+
+ 
 -- 6. Cross joins
 
     
