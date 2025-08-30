@@ -242,3 +242,33 @@ AND p1.product_name < p2.product_name
 ORDER BY price_diff DESC;
     
 -- 7. Union vs union all
+
+SELECT * FROM tops;
+SELECT * FROM outerwear;
+
+-- 7.1 Union
+SELECT * FROM tops
+UNION
+SELECT * FROM outerwear;
+
+-- 7.2 Union All
+SELECT * FROM tops
+UNION ALL
+SELECT * FROM outerwear;
+ -- -- Hoodie row gets repeated, since it appears on both tables
+
+-- 7.3 Union with different Column Names
+SELECT * FROM happiness_scores hs;
+SELECT * FROM happiness_scores_current hsc; -- > this table has ladder_score, which is happineess_score, but with a different name. Also, it only has data for 2024
+
+SELECT DISTINCT year FROM happiness_scores hs -- > year range goes from 2015 to 2023
+
+SELECT year, country, happiness_score FROM happiness_scores h
+UNION
+SELECT 2024, country, ladder_score FROM happiness_scores_current hsc; 
+ -- Note that the column names do not match but, as long as the types of values (in this case, integer, varchar and decimal) match, we can union them
+
+SELECT year, country, happiness_score FROM happiness_scores h
+UNION ALL 
+SELECT 2024, country, ladder_score FROM happiness_scores_current hsc; 
+-- This query has the same result (since there is no duplicate values), but should run faster
